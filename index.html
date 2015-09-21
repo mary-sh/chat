@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        var preffix = 'http://masha.sexy:8000';
+        function getMessages() {
+            var chatText = $('#chatText');
+            chatText.empty();
+            $.get(preffix + "/messages/", function (messages) {
+                $.each(messages, function (index, message) {
+                    var messageLine = '<b>' + message.author + '</b>: ' + message.text + '<br/>';
+                    chatText.append(messageLine);
+                });
+            });
+        }
+
+        $(function () {
+            var chatText = $('#chatText'),
+                    username = $('#username'),
+                    text = $('#text');
+
+            setInterval(function () {
+                getMessages();
+            }, 1000);
+
+            setInterval(function () {
+                var pos = chatText.scrollTop() + 10;
+                chatText.scrollTop(pos);
+            }, 100);
+
+            text.keypress(function (event) {
+                if (event.which == 13) {
+                    var username_value = $.trim(username.val()),
+                            text_value = $.trim(text.val());
+                    if (username_value != '' && text_value != '') {
+                        $.post(preffix + "/", {
+                            author: username_value,
+                            text: text_value
+                        }, function() {
+                            text.val('');
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div style="width:60%">
+    <div id="chatText" style="clear: both;border:solid 1px;overflow-x: scroll;height: 200px;"></div>
+    <input id="username" placeholder="username" size="10">
+    <input id="text" placeholder="text" size="90" on>
+</div>
+</body>
+</html>
