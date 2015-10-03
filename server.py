@@ -31,6 +31,7 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
 
         self.send_response(code)
         self.send_header('Content-type', content_type)
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         self.write_result(data, content_type)
 
