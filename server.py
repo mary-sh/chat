@@ -20,7 +20,7 @@ computed_colors = {}
 
 def generate_color(text):
     if text not in computed_colors:
-        color = ('#%s' % (hashlib.md5(text or 'FFFUUUuu').hexdigest()[:6])).upper()
+        color = ('#%s' % (hashlib.md5(text or 'FFFUUUuu').hexdigest()[-6:])).upper()
         computed_colors[text] = color
     return computed_colors[text]
 
