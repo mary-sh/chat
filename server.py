@@ -62,7 +62,7 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
                 author=author,
                 text=text,
                 time=time.time(),
-                color=generate_color(author)
+                color=generate_color(author.encode('utf-8'))
             )
             self.messages.append(message)
             if len(self.messages) > MESSAGES_LIMIT:
