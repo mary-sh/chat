@@ -10,7 +10,7 @@ def index():
         template = f.read()
     return template
 
-MESSAGES_LIMIT = 4
+MESSAGES_LIMIT = 10
 
 
 class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -46,7 +46,7 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
             author = str(post_data['author'][0])
             text = str(post_data['text'][0])
             self.messages.append(dict(author=author, text=text, time=time.time()))
-            if len(self.messages) >= MESSAGES_LIMIT:
+            if len(self.messages) > MESSAGES_LIMIT:
                 del self.messages[0]
         except (IndexError, KeyError):
             raise
