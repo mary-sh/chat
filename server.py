@@ -1,5 +1,6 @@
-import urllib
+import time
 import json
+import urllib
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
 
@@ -8,6 +9,8 @@ def index():
     with open('index.html', 'r') as f:
         template = f.read()
     return template
+
+MESSAGES_LIMIT = 4
 
 
 class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -42,9 +45,9 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
         try:
             author = str(post_data['author'][0])
             text = str(post_data['text'][0])
-            self.messages.append(dict(author=author, text=text))
-            if len(self.messages) > 100:
-                pass
+            self.messages.append(dict(author=author, text=text, time=time.time()))
+            if len(self.messages) >= MESSAGES_LIMIT:
+                del self.messages[0]
         except (IndexError, KeyError):
             raise
 
