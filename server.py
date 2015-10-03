@@ -1,8 +1,12 @@
 import time
 import json
 import urllib
+import hashlib
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
+
+
+MESSAGES_LIMIT = 10
 
 
 def index():
@@ -10,7 +14,16 @@ def index():
         template = f.read()
     return template
 
-MESSAGES_LIMIT = 10
+
+computed_colors = {}
+
+
+def generate_color(text):
+    if text not in computed_colors:
+        color = ('#%s' % (hashlib.md5(text or 'FFFUUUuu').hexdigest()[:6])).upper()
+        computed_colors[text] = color
+    return computed_colors[text]
+
 
 
 class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -45,7 +58,12 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
         try:
             author = str(post_data['author'][0])
             text = str(post_data['text'][0])
-            message = dict(author=author, text=text, time=time.time())
+            message = dict(
+                author=author,
+                text=text,
+                time=time.time(),
+                color=generate_color(author)
+            )
             self.messages.append(message)
             if len(self.messages) > MESSAGES_LIMIT:
                 del self.messages[0]
