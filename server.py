@@ -5,8 +5,8 @@ import hashlib
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
 
-
-MESSAGES_LIMIT = 10
+MESSAGE_LIMIT = 10
+MESSAGE_MAX_LENGTH = 400
 
 
 def index():
@@ -60,12 +60,12 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
             text = str(post_data['text'][0])
             message = dict(
                 author=author,
-                text=text,
+                text=text[:MESSAGE_MAX_LENGTH],
                 time=time.time(),
                 color=generate_color(author.encode('utf-8'))
             )
             self.messages.append(message)
-            if len(self.messages) > MESSAGES_LIMIT:
+            if len(self.messages) > MESSAGE_LIMIT:
                 del self.messages[0]
         except (IndexError, KeyError):
             raise
