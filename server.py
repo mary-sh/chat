@@ -45,7 +45,8 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
         try:
             author = str(post_data['author'][0])
             text = str(post_data['text'][0])
-            self.messages.append(dict(author=author, text=text, time=time.time()))
+            message = dict(author=author, text=text, time=time.time())
+            self.messages.append(message)
             if len(self.messages) > MESSAGES_LIMIT:
                 del self.messages[0]
         except (IndexError, KeyError):
@@ -55,6 +56,7 @@ class ChatHTTPRequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
+        self.write_result(message, 'application/json')
 
 
 if __name__ == '__main__':
